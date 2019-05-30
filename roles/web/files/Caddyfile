@@ -1,6 +1,8 @@
 * {
     gzip
 
+    header / -Server
+
     tls kelsin@valefor.com
 }
 
