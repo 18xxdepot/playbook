@@ -1,0 +1,7 @@
+* {
+    gzip
+
+    tls kelsin@valefor.com
+}
+
+import ./sites/*

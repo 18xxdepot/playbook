@@ -3,44 +3,119 @@
   apt:
     name:
         - ca-certificates
-        - nginx
-        - python-openssl
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
+        - curl
+        - python-docker
   tags:
-      - certs
-      - nginx
       - packages
 
-- name: Create letsencrypt state dir
+- name: Install caddy
+  shell: "CADDY_TELEMETRY=on curl https://getcaddy.com | bash -s personal http.cors,http.jwt"
+  args:
+    creates: /usr/local/bin/caddy
+  tags: caddy
+
+- name: Setup caddy group
+  group:
+    name: caddy
+  tags: caddy
+
+- name: Setup caddy user
+  user:
+    name: caddy
+    groups: caddy
+    shell: /usr/sbin/nologin
+    home: /var/www
+    create_home: no
+  tags: caddy
+
+- name: Setup caddy binary permissions
   file:
-    path: /etc/ssl/letsencrypt
-    state: directory
+    path: /usr/local/bin/caddy
+    state: file
+    mode: 0755
     owner: root
     group: root
-    mode: 700
-  tags: certs
+  tags: caddy
 
-- name: Create letsencrypt challenge dir
+- name: Setup caddy config folder
   file:
-    path: /var/www/html/.well-known/acme-challenge
+    path: /etc/caddy
     state: directory
+    mode: 0775
+    owner: root
+    group: caddy
+  tags: caddy
+
+- name: Setup caddy sites folder
+  file:
+    path: /etc/caddy/sites
+    state: directory
+    mode: 0775
+    owner: caddy
+    group: caddy
+  tags: caddy
+
+- name: Setup caddy ssl folder
+  file:
+    path: /etc/caddy/ssl
+    state: directory
+    mode: 0770
+    owner: caddy
+    group: caddy
+  tags: caddy
+
+- name: Setup caddy root folder
+  file:
+    path: /var/www
+    state: directory
+    mode: 0775
+    owner: caddy
+    group: caddy
+  tags: caddy
+
+- name: Install Caddyfile
+  copy:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+    owner: caddy
+    group: caddy
+    mode: 0644
+  notify: reload caddy
+  tags: caddy
+
+- name: Install new caddy site files
+  copy:
+    src: sites/
+    dest: /etc/caddy/sites
+    owner: caddy
+    group: caddy
+    mode: 0644
+  notify: reload caddy
+  tags: caddy
+
+- name: Install the caddy service
+  copy:
+    src: caddy.service
+    dest: /etc/systemd/system/caddy.service
+    mode: 0644
     owner: root
     group: root
-    mode: 755
-  tags: certs
+  tags: caddy
 
-- name: Generate account private key
-  openssl_privatekey:
-      path: /etc/ssl/letsencrypt.key
-      size: 2048
-  tags: certs
+- name: Enable the caddy service
+  systemd:
+    name: caddy
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  tags: caddy
 
-- include_tasks: cert.yml
-  loop: "{{ sites }}"
-
-- name: Start the nginx service
-  service: name=nginx state=started enabled=yes
+- include_tasks: login.yml
   tags:
-      - nginx
+      - sites
+      - login
+
+- include_tasks: pnp.yml
+  tags:
+      - sites
+      - pnp

@@ -1,0 +1,36 @@
+---
+- name: Create directory for login key
+  file:
+    path: /etc/login
+    state: directory
+    owner: root
+    group: caddy
+    mode: 0750
+  tags: login
+
+- name: Create the login private key
+  openssl_privatekey:
+    path: /etc/login/login.pem
+    owner: root
+    group: caddy
+    mode: 0640
+  tags: login
+
+- name: Create the login public key
+  openssl_publickey:
+    path: /etc/login/login.public.pem
+    privatekey_path: /etc/login/login.pem
+    owner: root
+    group: caddy
+    mode: 0640
+  tags: login
+
+- name: Create the Login container
+  docker_container:
+    name: login
+    image: 18xxdepot/login
+    ports: 8081:3000
+    env_file: /etc/caddy/login.18xxdepot.com.env
+    volumes: "/etc/login:/usr/app/keys"
+    pull: yes
+  tags: login

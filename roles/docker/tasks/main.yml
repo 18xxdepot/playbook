@@ -7,7 +7,9 @@
         - curl
         - gnupg2
         - software-properties-common
-  tags: docker
+  tags:
+      - docker
+      - packages
 
 - name: Install docker repo key
   apt_key:

@@ -1,0 +1,7 @@
+---
+- name: Create the 18xx container
+  docker_container:
+    name: pnp
+    image: kelsin/18xx
+    ports: 8082:80
+  tags: pnp
