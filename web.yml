@@ -1,0 +1,11 @@
+---
+- hosts: web
+  become: yes
+  vars:
+    sites:
+        - 18xxdepot.com
+        - login.18xxdepot.com
+        - pnp.18xxdepot.com
+        - cons.18xxdepot.com
+  roles:
+      - web

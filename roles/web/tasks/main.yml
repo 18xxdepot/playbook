@@ -1,0 +1,42 @@
+---
+- name: Install web packages
+  apt:
+    name:
+        - ca-certificates
+        - nginx
+        - python-openssl
+  tags:
+      - certs
+      - nginx
+
+- name: Create letsencrypt state dir
+  file:
+    path: /etc/ssl/letsencrypt
+    state: directory
+    owner: root
+    group: root
+    mode: 700
+  tags: certs
+
+- name: Create letsencrypt challenge dir
+  file:
+    path: /var/www/html/.well-known/acme-challenge
+    state: directory
+    owner: root
+    group: root
+    mode: 755
+  tags: certs
+
+- name: Generate account private key
+  openssl_privatekey:
+      path: /etc/ssl/letsencrypt.key
+      size: 2048
+  tags: certs
+
+- include_tasks: cert.yml
+  loop: "{{ sites }}"
+
+- name: Start the nginx service
+  service: name=nginx state=started enabled=yes
+  tags:
+      - nginx
