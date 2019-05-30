@@ -4,4 +4,7 @@
     name: pnp
     image: kelsin/18xx
     ports: 8082:80
+    pull: yes
+    comparisons:
+        image: strict
   tags: pnp
