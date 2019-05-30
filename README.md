@@ -1,5 +1,5 @@
-# playbooks
-Ansible Playbooks for 18xxdepot
+# playbook
+Ansible playbook for 18xxdepot
 
 ## Usage
 

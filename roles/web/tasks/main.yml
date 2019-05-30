@@ -5,9 +5,13 @@
         - ca-certificates
         - nginx
         - python-openssl
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
   tags:
       - certs
       - nginx
+      - packages
 
 - name: Create letsencrypt state dir
   file:
