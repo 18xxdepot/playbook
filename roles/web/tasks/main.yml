@@ -4,8 +4,8 @@
     name:
         - ca-certificates
         - curl
-        - python-docker
   tags:
+      - caddy
       - packages
 
 - name: Install caddy
@@ -111,6 +111,11 @@
     enabled: yes
     daemon_reload: yes
   tags: caddy
+
+- include_tasks: wordpress.yml
+  tags:
+      - sites
+      - wordpress
 
 - include_tasks: login.yml
   tags:

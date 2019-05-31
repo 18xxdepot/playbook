@@ -1,0 +1,5 @@
+---
+- name: reload postfix
+  command: /usr/sbin/postfix reload
+- name: reload postfix virtual
+  command: /usr/sbin/postmap /etc/postfix/virtual

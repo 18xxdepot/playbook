@@ -1,0 +1,17 @@
+---
+- name: Create mariadb config folder
+  file:
+    path: /etc/mariadb
+    state: directory
+    owner: root
+    group: root
+    mode: 0770
+  tags: db
+
+- include_tasks: db.yml
+  loop:
+      - wordpress
+      - board18
+  loop_control:
+    index_var: index
+  tags: db

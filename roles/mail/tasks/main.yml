@@ -1,0 +1,38 @@
+---
+- name: Set hostname
+  hostname:
+    name: 18xxdepot.com
+  tags: mail
+
+- name: Install postfix
+  apt:
+    name:
+        - mailutils
+        - postfix
+  tags: mail
+
+- name: Start the postfix service
+  service:
+    name: postfix
+    state: started
+  tags: mail
+
+- name: Install postfix main.cf
+  copy:
+    src: main.cf
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload postfix
+  tags: mail
+
+- name: Install postfix virtual
+  copy:
+    src: virtual
+    dest: /etc/postfix/virtual
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload postfix virtual
+  tags: mail

@@ -1,0 +1,11 @@
+# /etc/postfix/virtual
+
+admin@18xxdepot.com Stormblount@gmail.com,kelsin@valefor.com
+content@18xxdepot.com bmariebryant@gmail.com
+
+# Dan
+CyDrgn@18xxdepot.com Stormblount@gmail.com
+daniel@18xxdepot.com Stormblount@gmail.com
+
+# Chris
+kelsin@18xxdepot.com kelsin@valefor.com

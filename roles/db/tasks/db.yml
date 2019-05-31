@@ -1,0 +1,17 @@
+---
+- name: Create {{ item }} db volume
+  docker_volume:
+    name: "{{ item }}"
+  tags: db
+
+- name: Create {{ item }} mariadb container
+  docker_container:
+    name: "{{ item }}-db"
+    image: mariadb:10.3
+    ports: "{{ 3306 + index }}:3306"
+    env_file: /etc/mariadb/{{ item }}.env
+    pull: yes
+    comparisons:
+      image: strict
+    volumes: "{{ item }}:/var/lib/mysql"
+  tags: db

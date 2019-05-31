@@ -1,0 +1,42 @@
+---
+- name: Create wordpress config folder
+  file:
+    path: /etc/wordpress
+    state: directory
+    owner: root
+    group: root
+    mode: 0770
+  tags:
+      - sites
+      - wordpress
+
+- name: Create the themes volume
+  docker_volume:
+    name: wordpress-themes
+  tags:
+      - sites
+      - wordpress
+
+- name: Create the plugins volume
+  docker_volume:
+    name: wordpress-plugins
+  tags:
+      - sites
+      - wordpress
+
+- name: Create the wordpress container
+  docker_container:
+    name: wordpress
+    image: wordpress:5
+    ports: 8080:80
+    env_file: /etc/wordpress/env
+    links: wordpress-db
+    volumes:
+        - "wordpress-themes:/var/www/html/wp-content/themes/"
+        - "wordpress-plugins:/var/www/html/wp-content/plugins/"
+    pull: yes
+    comparisons:
+        image: strict
+  tags:
+      - sites
+      - wordpress
