@@ -19,9 +19,9 @@
   copy:
     src: opendkim.conf
     dest: /etc/opendkim.conf
-    owner: root
+    owner: opendkim
     group: opendkim
-    mode: 0644
+    mode: 0600
   notify: restart opendkim
   tags: mail
 
@@ -31,11 +31,30 @@
     dest: /etc/default/opendkim
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
   notify: restart opendkim
   tags: mail
 
-- name: Setup opendkim folders
+- name: Making sure group can read opendkim folder
+  file:
+    path: /etc/opendkim
+    mode: 0700
+    owner: opendkim
+    group: opendkim
+    state: directory
+  tags: mail
+
+- name: Setup opendkim keys folder
+  file:
+    path: /etc/opendkim/keys
+    state: directory
+    owner: opendkim
+    group: opendkim
+    mode: 0700
+  notify: restart opendkim
+  tags: mail
+
+- name: Setup opendkim 18xxdepot folder
   file:
     path: /etc/opendkim/keys/18xxdepot.com
     state: directory
