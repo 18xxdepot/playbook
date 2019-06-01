@@ -28,6 +28,17 @@
       - sites
       - wordpress
 
+- name: Install our klatch wordpress plugin
+  copy:
+    src: wordpress/klatch.php
+    dest: /var/lib/docker/volumes/wp-content/_data/plugins/klatch.php
+    owner: "33"
+    group: "33"
+    mode: 0644
+  tags:
+      - sites
+      - wordpress
+
 - name: Create the wordpress container
   docker_container:
     name: wordpress
