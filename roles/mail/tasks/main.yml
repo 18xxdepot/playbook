@@ -85,6 +85,16 @@
   notify: restart opendkim
   tags: mail
 
+- name: Install mailname
+  copy:
+    src: mailname
+    dest: /etc/mailname
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload postfix
+  tags: mail
+
 - name: Install postfix main.cf
   copy:
     src: main.cf
