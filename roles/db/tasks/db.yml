@@ -1,4 +1,9 @@
 ---
+- name: Create {{ item }} network
+  docker_network:
+    name: "{{ item }}"
+  tags: db
+
 - name: Create {{ item }} db volume
   docker_volume:
     name: "{{ item }}"
@@ -11,6 +16,8 @@
     ports: "{{ 3306 + index }}:3306"
     env_file: /etc/mariadb/{{ item }}.env
     pull: yes
+    networks:
+        - name: "{{ item }}"
     comparisons:
       image: strict
     volumes: "{{ item }}:/var/lib/mysql"

@@ -1,9 +1,5 @@
 18xxdepot.com {
-    jwt {
-        path /
-        publickey /etc/login/login.public.pem
-        passthrough
-    }
+    import auth
 
     proxy / localhost:8080 {
         transparent

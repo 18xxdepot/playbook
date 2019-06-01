@@ -45,7 +45,8 @@
     image: wordpress:5
     ports: 8080:80
     env_file: /etc/wordpress/env
-    links: wordpress-db
+    networks:
+        - name: wordpress
     volumes:
         - "wp-content:/var/www/html/wp-content/"
     pull: yes

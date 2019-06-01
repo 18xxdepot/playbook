@@ -1,8 +1,6 @@
 login.18xxdepot.com {
-    jwt {
-        path /headers
-        passthrough
-        publickey /etc/login/login.public.pem
+    /headers {
+        import auth
     }
 
     proxy / localhost:8081
