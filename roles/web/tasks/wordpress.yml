@@ -45,6 +45,7 @@
     image: wordpress:5
     ports: 8080:80
     env_file: /etc/wordpress/env
+    networks_cli_compatible: yes
     networks:
         - name: wordpress
     volumes:
