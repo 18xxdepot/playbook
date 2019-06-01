@@ -4,17 +4,85 @@
     name: 18xxdepot.com
   tags: mail
 
-- name: Install postfix
+- name: Install postfix and mail packages
   apt:
     name:
+        - opendkim
+        - opendkim-tools
         - mailutils
         - postfix
+  tags:
+      - mail
+      - packages
+
+- name: Install opendkim.conf
+  copy:
+    src: opendkim.conf
+    dest: /etc/opendkim.conf
+    owner: root
+    group: opendkim
+    mode: 0644
+  notify: restart opendkim
   tags: mail
 
-- name: Start the postfix service
-  service:
-    name: postfix
-    state: started
+- name: Install opendkim defaults
+  copy:
+    src: opendkim
+    dest: /etc/default/opendkim
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart opendkim
+  tags: mail
+
+- name: Setup opendkim folders
+  file:
+    path: /etc/opendkim/keys/18xxdepot.com
+    state: directory
+    owner: opendkim
+    group: opendkim
+    mode: 0700
+  notify: restart opendkim
+  tags: mail
+
+- name: Install opendkim data files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/opendkim/{{ item }}"
+    owner: opendkim
+    group: opendkim
+    mode: 0600
+  notify: restart opendkim
+  loop:
+    - TrustedHosts
+    - KeyTable
+    - SigningTable
+  tags: mail
+
+- name: Generate opendkim keys
+  command: opendkim-genkey -s mail -d 18xxdepot.com
+  args:
+    chdir: /etc/opendkim/keys/18xxdepot.com
+    creates: /etc/opendkim/keys/18xxdepot.com/mail.*
+  notify: restart opendkim
+  tags: mail
+
+- name: Setup permissions and owners on private key
+  file:
+    path: /etc/opendkim/keys/18xxdepot.com/mail.private
+    owner: opendkim
+    group: opendkim
+    mode: 0600
+  notify: restart opendkim
+  tags: mail
+
+- name: Setup permissions and owners on public key
+  file:
+    path: /etc/opendkim/keys/18xxdepot.com/mail.txt
+    owner: opendkim
+    group: opendkim
+    mode: 0600
+  notify: restart opendkim
   tags: mail
 
 - name: Install postfix main.cf
@@ -35,4 +103,16 @@
     group: root
     mode: 0644
   notify: reload postfix virtual
+  tags: mail
+
+- name: Start the opendkim service
+  service:
+    name: opendkim
+    state: started
+  tags: mail
+
+- name: Start the postfix service
+  service:
+    name: postfix
+    state: started
   tags: mail

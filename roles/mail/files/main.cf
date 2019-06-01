@@ -46,3 +46,9 @@ inet_protocols = all
 
 virtual_alias_domains = 18xxdepot.com
 virtual_alias_maps = hash:/etc/postfix/virtual
+
+# opendkim
+milter_protocol = 2
+milter_default_action = accept
+smtpd_milters = inet:localhost:8892
+non_smtpd_milters = inet:localhost:8892
