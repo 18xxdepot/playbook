@@ -15,11 +15,8 @@
     image: mariadb:10.3
     ports: "{{ 3306 + index }}:3306"
     env_file: /etc/mariadb/{{ item }}.env
-    pull: yes
     networks_cli_compatible: no
     networks:
         - name: "{{ item }}"
-    comparisons:
-      image: strict
     volumes: "{{ item }}:/var/lib/mysql"
   tags: db

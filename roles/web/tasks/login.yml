@@ -32,7 +32,4 @@
     ports: 8081:3000
     env_file: /etc/caddy/login.18xxdepot.com.env
     volumes: "/etc/login:/usr/app/keys"
-    pull: yes
-    comparisons:
-        image: strict
   tags: login
