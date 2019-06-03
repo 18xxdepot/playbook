@@ -10,6 +10,17 @@
       - sites
       - wordpress
 
+- name: Create the uploads.ini file
+  copy:
+    src: wordpress/uploads.ini
+    dest: /etc/wordpress/uploads.ini
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+      - sites
+      - wordpress
+
 - name: Create the wp-content volume
   docker_volume:
     name: wp-content
@@ -52,6 +63,7 @@
         - name: wordpress
     volumes:
         - "wp-content:/var/www/html/wp-content/"
+        - "/etc/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
   tags:
       - sites
       - wordpress
